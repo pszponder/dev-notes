@@ -1,19 +1,17 @@
 # How to Write Comments in JavaScript
 
-## Comment Out a Single Line of JavaScript Code
-- Use the a double backslash ```//``` to comment out a single line of code
+## Single Line Comment
+- Use the a double backslash `//` to create a single line comment
 
-### Example of Commented Out JavaScript Code
 ```js
-// This line is commented out in JavaScript
+// This is a single line comment in JavaScript
 ```
 
-## Comment Out Multiple Lines of JavaScript Code
-- Use the ```/* */``` charachters to comment out multiple lines of code
-- Multi-line comments START with ```/*```
-- Multi-line comments END with ```*/```
+## Multi-Line Comment
+- Use the `/* */` characters to comment out multiple lines of code
+- Multi-line comments START with `/*`
+- Multi-line comments END with `*/`
 
-### Example of Multi-line Comment in JavaScript
 ```js
 /*
 This

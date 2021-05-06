@@ -4,7 +4,7 @@
 3. If you haven't created a local git repository yet, go to **Option 1**
 4. If you already have a local git repository, go to **Option 2**
 
-**NOTE:** The only difference between using SSH and HTTPS is the address of the remote repository in the line of code ```git remote add origin ...```
+**NOTE:** The only difference between using SSH and HTTPS is the address of the remote repository in the line of code `git remote add origin ...`
 
 
 # Option 1: Create a New Reposityory on the Command Line
