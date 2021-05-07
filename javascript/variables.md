@@ -11,3 +11,6 @@ var a = 1;
 let b = 'two';
 const pi = 3.14159265;
 ```
+
+# Var vs Let vs Const
+Click [here](./var-vs-let-vs-const.md) for more information on the differences between the `var`, `let`, and `const` keywords
