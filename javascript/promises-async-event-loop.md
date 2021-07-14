@@ -116,6 +116,8 @@ console.log("Me first!");
 
 `console.log()` will still execute first. This is because when the thread of execution gets to setTimeout(), it puts printHello in the queue and moves on to print console.log()
 
+**ALL SYNCHRONOUS CODE WILL ALWAYS RUN BEFORE ASYNCHRONOUS CODE**
+
 # JavaScript is not enough
 
 We need new pieces (some of which aren't JavaScript at all)
@@ -136,8 +138,75 @@ We need to add some new components
 ## ES5 Solution: Introducing 'callback functions', and Web Browser APIs
 
 - Function definitions that would wait until they could execute
-- Would have functions on top of functions
+- Would have functions on top of functions (callback hell)
 
 ## Web Browser API
 
 - Enabled by the web browser that adds additional functionality to JavaScript
+  - The web browser api can also be run in the backend by something like the Node
+- Any tasks that are handed to the Web Browser API (like `setTimeout()`), once they are ready to be resolved, they are pushed to the callback queue by the web browser API
+  - The `event loop` keeps checking if there is anything in the callback queue or the global execution context to run
+    - The `even loop` is the thing that pops items off of the callback queue and pushes items to the call stack to execute
+
+## Event Loop
+
+- The event loop first executes all synchronous code
+- Once all synchronous code has been executed, if the call stack is empty, then it will start checking queues (like the callback queue)
+  - If the queue that the event loop is prioritized to has any functionality in it, the event loop will push that functionality to the call stack
+
+# ES6+ Solution (Promises)
+
+Using two-pronged 'facade' functions that both:
+
+- Initiate background web browser work and
+- Return a placeholder object (promise) immediately in JavaScript
+
+```js
+function display(data) {
+  console.log(data);
+}
+
+const futureData = fetch("https://twitter.com/regis/tweets/1");
+
+futureData.then(display);
+// Attaches display functionality to promise object
+
+console.log("Me first!");
+```
+
+## Promises
+
+- The fetch function returns a promise
+  - When it returns the promise object, it also sends the web browser api to retrieve the requested data
+- promises are objects
+- In addition to other properties, the promise object contains:
+
+  - value: (undefined until promise is fulfilled)
+  - status: (pending until promise is fulfilled, at which point the value of staus is changed to "resolved")
+  - onFulfilled: (value of onFulfilled property is updated by the .then() method and whatever is put into .then() is passed into onFulfilled as its value)
+    - When the value property is updated (on promise fulfillment), the value of the value property is passed into onFulfilled as an argument
+    - In the example above, onFulfilled is assigned the value of the function declaration of display. When the promise object created the fetch function resolves, the value of the value property is passed into the display function call under onFulfilled as a function argument and evaluated.
+
+- Promises are special objects built into JavaScript that get returned immediately when we make a call to a web browser API / feature (e.g. fetch) that's set up to return promises (not all are)
+- Promises act as a placeholder for the data we expect to get back from the web browser feature's background work
+- Any code we want to run on the returned data must also be saved on the promise object
+
+  - Added using .then method on the hidden property `onFulfilment`
+  - Promise objects will automatically trigger the attached function to run (with its input being the returned data)
+
+- Promise based functionality uses the `Microtask queue`
+- Anything using the browser's timer API uses the `callback queue`
+- The microtask queue takes precedence over the callback queue
+
+## Need to know how our promise-deferred functionality gets back into JavaScript to be run
+
+- Need a way of queuing up all this deferred functionality
+
+# We have rules for the execution of our asynchronously delayed code
+
+1. Hold promise-deferred functions in a microtask queue and callback function in a task queue (Callback queue) when the Web Browser Feature (API) finishes
+2. Add the function ot the Call stack (i.e. run the function) when:
+   2.1. Call stack is empty
+   2.2. All global synchronous code has run
+   (Have the Event Loop check this condition)
+3. Prioritize functions in the microtask queue over the Callback queue
